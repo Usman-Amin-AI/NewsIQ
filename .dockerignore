@@ -1,0 +1,14 @@
+.venv
+.venv_clean
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.swp
+.DS_Store
+.env
+.cache
+node_modules
+coverage
+dist
+build

@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: newsbot_app
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env
+    environment:
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_HEADLESS=true
+      - EMBEDDING_PROVIDER=${EMBEDDING_PROVIDER}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL}
+      - LLM_PROVIDER=${LLM_PROVIDER}
+      - LLM_MODEL=${LLM_MODEL}
+      - VECTORSTORE_BACKEND=${VECTORSTORE_BACKEND}
+      - VECTORSTORE_PATH=/data/vectorstores
+      - USE_CHROMA_SERVICE=${USE_CHROMA_SERVICE}
+      - CHROMA_SERVER_HOST=chroma
+      - CHROMA_SERVER_PORT=8000
+      - AUTH_USERS=${AUTH_USERS}
+      - ADMIN_USERS=${ADMIN_USERS}
+      - LOG_PATH=/data/logs/app.log
+      - METRICS_PATH=/data/metrics.json
+    volumes:
+      - newsbot_data:/data
+    depends_on:
+      - chroma
+
+  chroma:
+    image: chromaai/chroma:latest
+    container_name: newsbot_chroma
+    ports:
+      - "8000:8000"
+    environment:
+      - CHROMA_API_SERVER=true
+      - CHROMA_SERVER_HOST=0.0.0.0
+      - CHROMA_SERVER_PORT=8000
+    volumes:
+      - chroma_data:/data
+
+volumes:
+  newsbot_data:
+  chroma_data:
